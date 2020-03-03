@@ -1,15 +1,14 @@
 import fs from "fs"
+import _ from "lodash"
+import fetch from "node-fetch"
+import authorize from "../auth/authorize"
 
-const path = JSON.parse(fs.readFileSync('./config.json')).notebook_path
+const client_id = process.env.GITHUB_CLIENT_ID
+const client_secret = process.env.GITHUB_CLIENT_SECRET
+const GITHUB_AUTH = 'https://github.com';
+const GITHUB_API = 'https://api.github.com';
 
-// todo: replace this with a configured directory path
-export function get(req, res) {
-	const { slug } = req.params;
-	console.log(`${path}/${slug.replace(/\|/g, '/')}`)
-	let notebook = JSON.parse(fs.readFileSync(`${path}/${slug.replace(/\|/g, '/')}`))
-	res.writeHead(200, {
-		'Content-Type': 'application/json'
-	});
+const config = JSON.parse(fs.readFileSync('./config.json'))
+const repository = config.repository
+const path = `${config.notebook_path}/${config.publish_folder}`
 
-	res.end(JSON.stringify({ notebook, path }));
-}

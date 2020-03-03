@@ -1,6 +1,9 @@
 <script>
   import { onMount } from "svelte"
+  import Folder from "../../components/Folder.svelte"
   import { stores } from "@sapper/app"
+
+
   const { session } = stores()
 
   function lastPart(filepath){
@@ -25,7 +28,7 @@
     `redirect_uri=${redirect_uri}`
   ].join('&')
 
-  let notebooks = []
+  let files = []
   let path = undefined
 
   onMount(() => {
@@ -36,15 +39,13 @@
       })
       .then(response => response.json())
       .then(json => {
-        notebooks = json.notebooks
-        path = json.path
+        files = json.files
       })
       .catch(err => {
         console.log('not so fast!')
       })
   })
   
-  console.log($session)
 </script>
 
 <style>
@@ -61,14 +62,12 @@
 </style>
 
 <!-- svelte-ignore a11y-missing-attribute -->
-{#if notebooks.length}
-  <ul>
-      {#each notebooks as notebook }
-          {#if notebook.slice(-6) == '.ipynb' }
-              <li><a href="/notebooks/{anodize(notebook.slice(path.length+1))}">{lastPart(notebook)}</a></li>
-          {/if}
-      {/each}
-  </ul>
+{#if Object.keys(files).length}
+  <div class='sidebar'>
+    <Folder name="root" {files} expanded/>
+  </div>
+  <div class='notebook-preview'>
+  </div>
 {:else}
   <div style='display: flex;'>
     <p class='giant'>404</p>
