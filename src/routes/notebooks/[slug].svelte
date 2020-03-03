@@ -75,7 +75,7 @@
             "Show code" }
     </button>
 </div>
-
+<!-- svelte-ignore a11y-missing-attribute -->
 {#each notebook.cells as cell }
     {#if cell.cell_type == "markdown"}
         <div class="markdown">
@@ -93,7 +93,6 @@
         {/if}
         {#each cell.outputs as output}
             {#if output.data && output.data['image/png']}
-                <!-- svelte-ignore a11y-missing-attribute -->
                 <img src="data:image/png;base64,{output.data['image/png']}">
             {/if}
         {/each}

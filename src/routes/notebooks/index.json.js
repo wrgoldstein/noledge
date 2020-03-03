@@ -1,4 +1,5 @@
 import fs from "fs"
+import authorize from "../auth/authorize"
 
 const path = JSON.parse(fs.readFileSync('./config.json')).notebook_path
 
@@ -19,10 +20,19 @@ async function getFiles(dir) {
 // todo: replace this with a configured directory path
 
 export function get(req, res) {
-	res.writeHead(200, {
-		'Content-Type': 'application/json'
-	});
-	getFiles(path).then( files => {
-		res.end(JSON.stringify({ files, path }));
-	})
+  
+  let [authorized, payload] = authorize(req, res)
+
+  if (!authorized){
+    // Need to redirect to 
+    res.statusCode = 401
+    return res.end('{}')
+  }
+  console.log(payload)
+  res.writeHead(200, {
+    'Content-Type': 'application/json'
+  })
+  getFiles(path).then( files => {
+    res.end(JSON.stringify({ notebooks: files, path }));
+  })
 }

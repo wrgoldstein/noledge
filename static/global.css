@@ -34,3 +34,13 @@ code {
 		font-size: 16px;
 	}
 }
+
+.btn {
+  cursor: pointer;
+  background-color: #5F758E;
+  color: ivory;
+  padding: 15px;
+  min-width: 4em;
+  display: inline-block;
+  text-align: center;
+}

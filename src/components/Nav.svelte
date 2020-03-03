@@ -1,5 +1,8 @@
 <script>
-	export let segment;
+  export let segment;
+
+  import { stores } from "@sapper/app"
+  const { session } = stores()
 </script>
 
 <style>
@@ -45,7 +48,11 @@
 		text-decoration: none;
 		padding: 1em 0.5em;
 		display: block;
-	}
+  }
+  
+  .topnav-right {
+    float: right;
+  }
 </style>
 
 <nav>
@@ -56,5 +63,8 @@
 		<!-- for the blog link, we're using rel=prefetch so that Sapper prefetches
 		     the blog data when we hover over the link or tap it on a touchscreen -->
 		<li><a rel=prefetch aria-current='{segment === "notebooks" ? "page" : undefined}' href='notebooks'>notebooks</a></li>
+    <ul class="topnav-right">
+      <li><a href='auth'>User settings</a></li>
+    </ul>
 	</ul>
 </nav>

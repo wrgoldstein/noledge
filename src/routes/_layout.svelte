@@ -17,6 +17,10 @@
 
 <Nav {segment}/>
 
+<svelte:head>
+	<title>Noledge</title>
+</svelte:head>
+
 <main>
 	<slot></slot>
 </main>
