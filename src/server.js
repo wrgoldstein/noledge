@@ -31,7 +31,9 @@ polka() // You can also use Express
 		sirv('static', { dev }),
 		sapper.middleware({
 			session: req => ({
-				user: req.session && req.session.user
+        user: req.session && req.session.user,
+        github_client_id: process.env.GITHUB_CLIENT_ID,
+        host: dev ? `localhost:${PORT}` : 'production url'
 			})
     }))
 	.listen(PORT, err => {

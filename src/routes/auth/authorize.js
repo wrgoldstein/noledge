@@ -10,7 +10,7 @@ export default (req, res) => {
 
   let payload
   try {
-    payload = jwt.verify(user.token, jwtKey)
+    payload = jwt.verify(user.jwt_token, jwtKey)
   } catch (e) {
     if (e instanceof jwt.JsonWebTokenError) {
       // if the error thrown is because the JWT is unauthorized, return a 401 error

@@ -2,10 +2,16 @@
   import { stores, goto } from '@sapper/app';
 
   const { session } = stores()
+  const github_root = "https://github.com/login/oauth/authorize"
+  const redirect_uri = `http://${$session.host}/auth/callback`
+  const github_url = [
+    `${github_root}?client_id=${$session.github_client_id}`,
+    `redirect_uri=${redirect_uri}`
+  ].join('&')
 
   function login(){
     fetch('/auth/login').then((response) => {
-      goto('/')
+      goto('/notebooks')
     })
   }
 
@@ -17,16 +23,14 @@
   }
 </script>
 
-<h1>User settings</h1>
-
 {#if $session.user }
-  <h1> Hello { $session.user.login }</h1>
+  <h1> hello { $session.user.login }</h1>
 {/if}
 <!-- svelte-ignore a11y-missing-attribute -->
 <div>
   {#if $session.user}
-    <a class="btn" on:click={logout}>Log out</a>
+    <a class="btn" on:click={logout}>log out</a>
   {:else}
-    <a class="btn" on:click={login}>Login (with github)</a>
+    <a class="btn" href="{github_url}">login (with github)</a>
   {/if}
 </div>

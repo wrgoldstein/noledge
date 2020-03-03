@@ -18,6 +18,13 @@
     })
   }
 
+  const github_root = "https://github.com/login/oauth/authorize"
+  const redirect_uri = `http://${$session.host}/auth/callback`
+  const github_url = [
+    `${github_root}?client_id=${$session.github_client_id}`,
+    `redirect_uri=${redirect_uri}`
+  ].join('&')
+
   let notebooks = []
   let path = undefined
 
@@ -32,6 +39,9 @@
         notebooks = json.notebooks
         path = json.path
       })
+      .catch(err => {
+        console.log('not so fast!')
+      })
   })
   
   console.log($session)
@@ -39,7 +49,14 @@
 
 <style>
   .giant {
-    font-size: 3em;
+    font-size: 8em;
+  }
+
+  .login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 2em;
   }
 </style>
 
@@ -53,7 +70,11 @@
       {/each}
   </ul>
 {:else}
-  <p class='giant'>404</p>
-  <p>Perhaps you need to log in?</p>
-  <a class='btn' on:click={login}>Log me in with Github!</a>
+  <div style='display: flex;'>
+    <p class='giant'>404</p>
+    <div class='login'>
+      <p>Perhaps you need to log in?</p>
+      <a class='btn' href={github_url}>Log me in with Github!</a>
+    </div>
+  </div>
 {/if}
