@@ -4,7 +4,6 @@
 	export let expanded = false;
 	export let name;
   export let files;
-  export let type;
 
 	function toggle() {
 		expanded = !expanded;

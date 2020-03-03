@@ -3,6 +3,7 @@
     import Prism from "prismjs"
     import "prismjs/components/prism-python"
     import "prismjs/themes/prism.css"
+    import Cell from "./Cell.svelte"
 
     export let notebook;
 	  let show_code = false
@@ -49,17 +50,15 @@
     }
 </style>
 
-<svelte:head>
-	<title>A Notebook</title>
-</svelte:head>
-
+<!-- svelte-ignore a11y-missing-attribute -->
 <div class="button-container">
-    <button on:click={toggleCode}>
+    <a class="btn" on:click={toggleCode}>
         { show_code ?
             "Hide code" :
             "Show code" }
-    </button>
+    </a>
 </div>
+
 <!-- svelte-ignore a11y-missing-attribute -->
 {#each notebook.cells as cell }
     {#if cell.cell_type == "markdown"}
@@ -79,6 +78,13 @@
         {#each cell.outputs as output}
             {#if output.data && output.data['image/png']}
                 <img src="data:image/png;base64,{output.data['image/png']}">
+            {:else if output.output_type == 'execute_result'}
+              {console.log(output)}
+              {#if output.data && output.data['text/html']}
+                { @html output.data['text/html'].join('') }
+              {:else if show_code}
+                <code>{output.data['text/plain'].join('')}</code>
+              {/if}
             {/if}
         {/each}
     {/if}

@@ -1,6 +1,6 @@
 <script>
-	export let name, type;
-	$: type = name.slice(name.lastIndexOf('.') + 1);
+	export let name, type, sha
+	// $: type = name.slice(name.lastIndexOf('.') + 1);
 </script>
 
 <style>
@@ -11,4 +11,10 @@
 	}
 </style>
 
-<span style="background-image: url(tutorial/icons/{type}.svg)">{name}</span>
+<span>
+  <a href="/notebooks/{sha}" {name}>{name}</a>
+</span>
+
+<!-- todo: implement icons
+<span style="background-image: url(tutorial/icons/{type}.svg)">
+</span> -->

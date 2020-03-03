@@ -10,6 +10,4 @@ export const User = mongoose.model('User', {
   avatar_url: String,
   token: String
  });
-
-
-// GET https://api.github.com/repos/:owner/:repo/contents/:path
+ 

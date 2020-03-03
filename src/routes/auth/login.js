@@ -1,5 +1,9 @@
 import fetch from "node-fetch"
 import jwt from "jsonwebtoken"
+import {
+  persist_tree,
+  get_contents
+} from "../../repository"
 
 const jwtKey = process.env.JWT_SECRET
 const client_id = process.env.GITHUB_CLIENT_ID
@@ -21,6 +25,12 @@ export async function get(req, res){
   })
   const text = await response.text()
   const token = text.slice(13, 53)
+
+  // todo don't do this on every authentication
+  const tree = await get_contents(token)
+  console.log(tree)
+  await persist_tree(tree) // persist files
+
   const opts = { 
     method: 'GET',
     headers: { Authorization: `token ${token}` }

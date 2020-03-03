@@ -3,6 +3,7 @@
   import Folder from "../../components/Folder.svelte"
   import { stores } from "@sapper/app"
 
+  import Notebook from "./Notebook.svelte"
 
   const { session } = stores()
 
@@ -69,7 +70,7 @@
   <div class='notebook-preview'>
   </div>
 {:else}
-  <div style='display: flex;'>
+<div style='display: flex;'>
     <p class='giant'>404</p>
     <div class='login'>
       <p>Perhaps you need to log in?</p>

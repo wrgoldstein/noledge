@@ -9,6 +9,12 @@
     `redirect_uri=${redirect_uri}`
   ].join('&')
 
+  function refresh(){
+    fetch('/auth/refresh').then((response) => {
+      goto('/notebooks')
+    })
+  }
+
   function login(){
     fetch('/auth/login').then((response) => {
       goto('/notebooks')
@@ -29,6 +35,7 @@
 <!-- svelte-ignore a11y-missing-attribute -->
 <div>
   {#if $session.user}
+    <a class="btn" on:click={refresh}>reload notebooks</a>
     <a class="btn" on:click={logout}>log out</a>
   {:else}
     <a class="btn" href="{github_url}">login (with github)</a>

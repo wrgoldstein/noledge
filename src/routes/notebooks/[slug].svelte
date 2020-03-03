@@ -1,13 +1,11 @@
 <script context="module">
-	function anodize(filepath){
-        return filepath.replace(/\//g, '|')
-	}
-
 	export function preload({ params, query }) {
-		return this.fetch(`notebooks/${anodize(params.slug)}.json`)
-			.then(r => r.json())
-			.then(data => {
-				return data;
+    return this.fetch(`notebooks/${params.slug}.json`)
+			.then(r => {
+        return r.json()
+      })
+			.then(notebook => {
+				return { notebook };
 			}
 		);
 	}

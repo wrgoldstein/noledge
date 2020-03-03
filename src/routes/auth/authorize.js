@@ -1,7 +1,10 @@
+import fetch from "node-fetch"
 import jwt from "jsonwebtoken"
+
+const GITHUB_API = 'https://api.github.com';
 const jwtKey = process.env.JWT_SECRET
 
-export default (req, res) => {
+export function authorize(req){
   const user = req.session.user
 
   if (!user) {
@@ -20,4 +23,13 @@ export default (req, res) => {
   }
 
   return [ true, payload ]
+}
+
+export function get(url, req){
+  let [ authed, payload ] = authorize(req)
+  const opts = { 
+    method: 'GET',
+    headers: { Authorization: `token ${payload.token}` }
+  }
+  return fetch(url, opts).then(r => r.text())
 }
