@@ -1,18 +1,15 @@
 <script context="module">
-	export function preload({ params, query }) {
+	export function preload({ params, session, query }) {
+    console.log(session)
     return this.fetch(`notebooks/${params.slug}.json`)
 			.then(r => {
         return r.json()
       })
-			.then(notebook => {
-				return { notebook };
-			}
-		);
 	}
 </script>
 <script>
-  export let notebook
-  import Notebook from "./Notebook.svelte"
+  export let notebook, file
+  import Notebook from "../../components/Notebook.svelte"
 </script>
 
-<Notebook {notebook}/>
+<Notebook {file} {notebook}/>

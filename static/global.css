@@ -23,15 +23,6 @@ a {
   text-decoration: none;
 }
 
-code {
-	font-family: menlo, inconsolata, monospace;
-	font-size: calc(1em - 2px);
-	color: #555;
-	background-color: #f0f0f0;
-	padding: 0.2em 0.4em;
-	border-radius: 2px;
-}
-
 @media (min-width: 400px) {
 	body {
 		font-size: 16px;
@@ -43,7 +34,7 @@ code {
   cursor: pointer;
   background-color: #5F74DA;
   color: ivory;
-  padding: 15px;
+  padding: 5px 15px 5px 15px;
   min-width: 4em;
   display: inline-block;
   text-align: center;
@@ -51,4 +42,27 @@ code {
 
 h1, h2, h3, h4, .heading {
   font-family: 'Open Sans'
+}
+
+td, th {
+  text-align: left;
+  vertical-align: middle;
+  padding: 4px;
+}
+tr, th, td {
+  border: 1px solid #000;
+  border-collapse: collapse;
+  margin: 1em 2em;
+}
+
+td {
+  display: table-cell;
+  vertical-align: inherit;
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #000;
+  border-collapse: collapse;
 }

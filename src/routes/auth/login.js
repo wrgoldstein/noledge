@@ -28,7 +28,6 @@ export async function get(req, res){
 
   // todo don't do this on every authentication
   const tree = await get_contents(token)
-  console.log(tree)
   await persist_tree(tree) // persist files
 
   const opts = { 

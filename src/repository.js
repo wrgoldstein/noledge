@@ -24,15 +24,16 @@ async function recurse_contents(content, opts){
     let files = await Promise.all(folder.map(file => recurse_contents(file, opts)))
     return {
       name: content.name,
-      sha: content.sha,
+      path: content.path,
       type: 'folder',
       files
     }
   } else {
     return { 
-      name: content.name, 
-      type: 'file', 
+      name: content.name,
+      path: content.path,
       sha: content.sha,
+      type: 'file', 
       download_url: content.download_url
     }
   }
@@ -43,29 +44,28 @@ mongoose.connect('mongodb://localhost:27017/test', {
   useUnifiedTopology: true
 });
 
-const Repo = mongoose.model('Repo', {
+export const Repo = mongoose.model('Repo', {
   tree: Object
 })
 
-const FileLookup = mongoose.model('File', {
+const File = mongoose.model('File', {
   sha: String,
   download_url: String,
   name: String
 })
 
-async function save_SHA(files){
-  // create one document per notebook to allow
-  // looking up the 
-  await FileLookup.deleteMany()
-  await Promise.all(files.map(_save_SHA))
+async function save_file(files){
+  // create one document per notebook
+  await File.deleteMany()
+  await Promise.all(files.map(_save_file))
   return
 }
 
-async function _save_SHA(file){
+async function _save_file(file){
   if (file.type == 'file') // save it
-    await FileLookup(file).save()
+    await File(file).save()
   else {
-    await Promise.all(file.files.map(_save_SHA))
+    await Promise.all(file.files.map(_save_file))
   }
   return
 }
@@ -73,11 +73,10 @@ async function _save_SHA(file){
 export async function persist_tree(tree){
   await Repo.deleteMany() // store only one tree at a time
   await Repo({tree}).save()
-  await save_SHA(tree)
+  await save_file(tree)
   return
 }
 
-export async function get_download_url_by_sha(sha){
-  const file = await FileLookup.findOne({ sha })
-  return file.download_url
+export async function get_file_by_sha(sha){
+  return await File.findOne({ sha })
 }

@@ -16,10 +16,6 @@
 	}
 </style>
 
-<svelte:head>
-	<title>Sapper project template</title>
-</svelte:head>
-
 <figure>
 	<img alt='Hall of knowledge' src='mbostock.png'>
 </figure>

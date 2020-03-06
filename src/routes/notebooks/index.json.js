@@ -1,5 +1,5 @@
 import * as auth from "../auth/authorize"
-import { get_contents } from "../../repository"
+import { Repo } from "../../repository"
 
 export async function get(req, res) {
   // TODO cache this in a database
@@ -11,7 +11,11 @@ export async function get(req, res) {
   }
 
   const { token } = payload
-  const files = await get_contents(token)
+
+  // Definitely do NOT do this every time
+  // a page is loaded
+  const tree = await Repo.findOne().exec()
+  const files = tree.tree
 
   res.writeHead(200, {
     'Content-Type': 'application/json'

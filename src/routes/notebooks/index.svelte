@@ -2,10 +2,13 @@
   import { onMount } from "svelte"
   import Folder from "../../components/Folder.svelte"
   import { stores } from "@sapper/app"
+  import _ from "lodash"
 
-  import Notebook from "./Notebook.svelte"
+  import Notebook from "../../components/Notebook.svelte"
 
   const { session } = stores()
+
+  let display = 'stream'
 
   function lastPart(filepath){
       let split = filepath.split('/')
@@ -31,8 +34,11 @@
 
   let files = []
   let path = undefined
+  let error = undefined
+  let loading = 'Loading page'
 
   onMount(() => {
+    loading = 'Loading data'
     fetch(`notebooks.json`)
       .then(response => {
         if (!response.ok) throw Error(response.statusCode)
@@ -40,10 +46,12 @@
       })
       .then(response => response.json())
       .then(json => {
-        files = json.files
+        console.log(json)
+        files = _.sortBy(json.files, (f) => f.type == 'folder' ? 0 : 1)
+        loading = false
       })
       .catch(err => {
-        console.log('not so fast!')
+        error = err
       })
   })
   
@@ -69,7 +77,9 @@
   </div>
   <div class='notebook-preview'>
   </div>
-{:else}
+{:else if loading}
+  <p class='giant'>{loading}</p>
+{:else if error }
 <div style='display: flex;'>
     <p class='giant'>404</p>
     <div class='login'>

@@ -6,9 +6,6 @@ import {
 } from "../../repository"
 import * as auth from "./authorize"
 
-const jwtKey = process.env.JWT_SECRET
-const GITHUB_API = 'https://api.github.com';
-
 export async function get(req, res){
   let [authorized, payload] = auth.authorize(req, res)
   
@@ -20,6 +17,6 @@ export async function get(req, res){
   const { token } = payload
   
   const tree = await get_contents(token)
-  await persist_tree(tree) // persist files
+  await persist_tree(tree)
   res.end()
 }

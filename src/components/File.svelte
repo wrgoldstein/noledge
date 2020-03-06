@@ -1,5 +1,5 @@
 <script>
-	export let name, type, sha
+	export let name, sha
 	// $: type = name.slice(name.lastIndexOf('.') + 1);
 </script>
 
