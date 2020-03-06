@@ -2,6 +2,7 @@ import * as auth from "../auth/authorize"
 import { Repo, File } from "../../repository"
 
 export async function get(req, res) {
+  // TODO cache this in a database
   let [authorized, payload] = auth.authorize(req, res) 
   
   if (!authorized){
@@ -11,8 +12,9 @@ export async function get(req, res) {
 
   const { token } = payload
   const { display } = req.query
-  const files = await File.find().exec() //todo paginate
-
+  const tree = await Repo.findOne().exec()
+  const files = tree.tree
+  
   res.writeHead(200, {
     'Content-Type': 'application/json'
   })

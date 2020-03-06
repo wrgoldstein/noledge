@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import fs from "fs"
 import fetch from "node-fetch"
+import yaml from 'js-yaml'
 
 const GITHUB_API = 'https://api.github.com';
 
@@ -54,7 +55,9 @@ export const File = mongoose.model('File', {
   download_url: String,
   author: Object,
   name: String,
-  updated_at: Date
+  updated_at: Date,
+  tags: Object,
+  description: String
 })
 
 export const FileBody = mongoose.model('FileBody', {
@@ -79,12 +82,27 @@ async function _save_file(file, token){
       method: 'GET',
       headers: { Authorization: `token ${token}` }
     }
-    const body = await fetch(file.download_url, opts).then(r => r.text())
+    let body = await fetch(file.download_url, opts).then(r => r.text())
     const commits = await fetch(`${COMMIT_URL}?path=${file.path}`, opts).then(r => r.json())
     const commit = commits.pop()
+    try {
+      body = JSON.parse(body)
+    } catch {
+      // todo unhandled errors
+      return
+    }
+
+    // parse metadata from notebook
+    let meta = {}
+    if (body.cells && body.cells[0].cell_type == 'raw'){
+      meta = body.cells.shift()
+      meta = yaml.load(meta.source.join('').split('---')[1])
+    }
+
     file.author = { ...commit.author, ...commit.commit.author }
     file.updated_at = commit.commit.author.date
     file.body = body
+    file = { ...file, ...meta }
     await File(file).save()
     await FileBody(file).save() // save document body separately
   }
@@ -96,7 +114,7 @@ async function _save_file(file, token){
 
 export async function persist_tree(tree, token){
   await Repo.deleteMany() // store only one tree at a time
-  await Repo({tree}).save()
+  await Repo({ tree }).save()
   await save_files(tree, token)
   return
 }
