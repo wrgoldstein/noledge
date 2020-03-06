@@ -1,6 +1,5 @@
 <script context="module">
 	export function preload({ params, session, query }) {
-    console.log(session)
     return this.fetch(`notebooks/${params.slug}.json`)
 			.then(r => {
         return r.json()

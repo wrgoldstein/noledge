@@ -33,6 +33,7 @@
   ].join('&')
 
   let files = []
+  let flat_files
   let path = undefined
   let error = undefined
   let loading = 'Loading page'
@@ -46,7 +47,8 @@
       })
       .then(response => response.json())
       .then(json => {
-        console.log(json)
+        flat_files = _.flatten(json.files).filter(f => f.type == 'file')
+        console.log(flat_files)
         files = _.sortBy(json.files, (f) => f.type == 'folder' ? 0 : 1)
         loading = false
       })

@@ -1,7 +1,8 @@
 <script>
+  import moment from "moment"
   import Cell from "./Cell.svelte"
 
-  export let notebook, file
+  export let file, notebook
 
   let show_code = notebook.cells.map(i => false)
   
@@ -17,6 +18,8 @@
 </style>
 
 <h1>{file.name}</h1>
+<p>by {file.author.name}</p>
+<p>updated {moment(file.updated_at).format('MMMM Do YYYY, h:mm:ss a')}</p>
 
 <!-- svelte-ignore a11y-missing-attribute -->
 <div class="button-container">

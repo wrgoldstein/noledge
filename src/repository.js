@@ -6,14 +6,15 @@ const GITHUB_API = 'https://api.github.com';
 
 const config = JSON.parse(fs.readFileSync('./config.json'))
 const repository = config.repository
-const source = `${GITHUB_API}/repos/${repository}/contents`
+const SOURCE_URL = `${GITHUB_API}/repos/${repository}/contents`
+const COMMIT_URL = `${GITHUB_API}/repos/${repository}/commits`
 
 export async function get_contents(token){
   const opts = { 
     method: 'GET',
     headers: { Authorization: `token ${token}` }
   }
-  let contents = await fetch(source, opts).then(r => r.json())
+  let contents = await fetch(SOURCE_URL, opts).then(r => r.json())
   contents = await Promise.all(contents.map(c => recurse_contents(c, opts)))
   return contents
 }
@@ -48,32 +49,55 @@ export const Repo = mongoose.model('Repo', {
   tree: Object
 })
 
-const File = mongoose.model('File', {
+export const File = mongoose.model('File', {
   sha: String,
   download_url: String,
-  name: String
+  author: Object,
+  name: String,
+  updated_at: Date
 })
 
-async function save_file(files){
+export const FileBody = mongoose.model('FileBody', {
+  sha: String,
+  body: Object
+})
+
+
+async function save_files(files, token){
   // create one document per notebook
   await File.deleteMany()
-  await Promise.all(files.map(_save_file))
+  await Promise.all(files.map((f) => _save_file(f, token)))
   return
 }
 
-async function _save_file(file){
-  if (file.type == 'file') // save it
+async function _save_file(file, token){
+  // todo clean up
+
+  if (file.type == 'file') {
+    if (file.name.slice(file.name.length - 6, file.name.length) != '.ipynb') return
+    const opts = { 
+      method: 'GET',
+      headers: { Authorization: `token ${token}` }
+    }
+    const body = await fetch(file.download_url, opts).then(r => r.text())
+    const commits = await fetch(`${COMMIT_URL}?path=${file.path}`, opts).then(r => r.json())
+    const commit = commits.pop()
+    file.author = { ...commit.author, ...commit.commit.author }
+    file.updated_at = commit.commit.author.date
+    file.body = body
     await File(file).save()
+    await FileBody(file).save() // save document body separately
+  }
   else {
-    await Promise.all(file.files.map(_save_file))
+    await Promise.all(file.files.map((f) => _save_file(f, token)))
   }
   return
 }
 
-export async function persist_tree(tree){
+export async function persist_tree(tree, token){
   await Repo.deleteMany() // store only one tree at a time
   await Repo({tree}).save()
-  await save_file(tree)
+  await save_files(tree, token)
   return
 }
 

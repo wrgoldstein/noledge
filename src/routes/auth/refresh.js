@@ -17,6 +17,6 @@ export async function get(req, res){
   const { token } = payload
   
   const tree = await get_contents(token)
-  await persist_tree(tree)
+  await persist_tree(tree, token)
   res.end()
 }
