@@ -7,7 +7,6 @@ export async function get(req, res) {
   const file = await File.findOne({ sha: slug }).exec()
   const body = await FileBody.findOne({ sha: slug }).exec()
   const notebook = body.body
-  console.log('there')
   // const notebook = await auth.get(file.download_url, req)
   res.writeHead(200, {
     'Content-Type': 'application/json'

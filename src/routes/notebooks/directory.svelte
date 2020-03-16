@@ -39,7 +39,6 @@
       .then(response => response.json())
       .then(json => {
         flat_files = _.flatten(json.files).filter(f => f.type == 'file')
-        console.log(flat_files)
         files = _.sortBy(json.files, (f) => f.type == 'folder' ? 0 : 1)
         loading = false
       })
