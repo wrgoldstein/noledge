@@ -64,7 +64,7 @@
 		     the blog data when we hover over the link or tap it on a touchscreen -->
 		<li><a rel=prefetch aria-current='{segment === "notebooks" ? "page" : undefined}' href='notebooks'>notebooks</a></li>
     <ul class="topnav-right">
-      <li><a href='auth'>User settings</a></li>
+      <li><a rel=prefetch aria-current='{segment === "auth" ? "page" : undefined}' href='auth'>User settings</a></li>
     </ul>
 	</ul>
 </nav>

@@ -99,12 +99,21 @@ async function _save_file(file, token){
       meta = yaml.load(meta.source.join('').split('---')[1])
     }
 
-    file.author = { ...commit.author, ...commit.commit.author }
+    file.author = { 
+      ...commit.author, 
+      ...commit.commit.author
+    }
     file.updated_at = commit.commit.author.date
     file.body = body
     file = { ...file, ...meta }
-    await File(file).save()
-    await FileBody(file).save() // save document body separately
+    try {
+      // major hack, don't save files which can't be stored
+      // in mongodb
+      await File(file).save()
+      await FileBody(file).save() // save document body separately
+    } catch {
+      // do nothing
+    }
   }
   else {
     await Promise.all(file.files.map((f) => _save_file(f, token)))

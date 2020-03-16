@@ -9,7 +9,7 @@
 </script>
 <script>
   export let notebook, file
-  console.log(file)
+  notebook = JSON.parse(notebook)
   import Notebook from "../../components/Notebook.svelte"
 </script>
 

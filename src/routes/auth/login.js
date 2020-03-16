@@ -24,11 +24,13 @@ export async function get(req, res){
     })
   })
   const text = await response.text()
+  console.log(text)
   const token = text.slice(13, 53)
-
+  console.log(token)
   // todo don't do this on every authentication
   const tree = await get_contents(token)
-  await persist_tree(tree) // persist files
+  console.log(tree)
+  await persist_tree(tree, token) // persist files
 
   const opts = { 
     method: 'GET',

@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte"
   import Folder from "../../components/Folder.svelte"
-  import { stores } from "@sapper/app"
+  import { stores, goto } from "@sapper/app"
   import _ from "lodash"
   import moment from "moment"
 
@@ -10,12 +10,7 @@
   const { session } = stores()
 
   let display = 'stream'
-
-  function login(){
-    fetch('/auth/login').then((response) => {
-      goto('/')
-    })
-  }
+  let error
 
   const github_root = "https://github.com/login/oauth/authorize"
   const redirect_uri = `http://${$session.host}/auth/callback`
@@ -28,6 +23,9 @@
   let loading = 'Loading page'
 
   onMount(() => {
+    if (!$session.user){
+      goto('/auth')
+    }
     loading = 'Loading data'
     fetch(`notebooks.json`)
       .then(response => {
@@ -93,10 +91,13 @@
 
   span {
     font-size: 1.3em;
+    color: steelblue;
   }
 
   input {
-    width: 40%;
+    margin: 2em;
+    width: 80%;
+    margin-left: auto;
     height: 1.5em;
     border-radius: 5px;
     font-size: 19px;
@@ -134,7 +135,9 @@
 <!-- svelte-ignore a11y-missing-attribute -->
 <header>Search posts:</header>
   <input bind:value={term} on:change={search}/>
-{#if Object.keys(files).length}
+{#if error == 401}
+  <p class='giant'>Unauthenticated</p>
+{:else if Object.keys(files).length}
   {#each files as file}
     <div class="file column">
       <div class="row">
