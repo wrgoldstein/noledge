@@ -4,9 +4,7 @@ import fetch from "node-fetch"
 import yaml from 'js-yaml'
 
 const GITHUB_API = 'https://api.github.com';
-
-const config = JSON.parse(fs.readFileSync('./config.json'))
-const repository = config.repository
+const repository = process.env.REPOSITORY
 const SOURCE_URL = `${GITHUB_API}/repos/${repository}/contents`
 const COMMIT_URL = `${GITHUB_API}/repos/${repository}/commits`
 
@@ -15,9 +13,14 @@ export async function get_contents(token){
     method: 'GET',
     headers: { Authorization: `token ${token}` }
   }
-  let contents = await fetch(SOURCE_URL, opts).then(r => r.json())
-  contents = await Promise.all(contents.map(c => recurse_contents(c, opts)))
-  return contents
+  try {
+    let contents = await fetch(SOURCE_URL, opts).then(r => r.json())
+    contents = await Promise.all(contents.map(c => recurse_contents(c, opts)))
+    return contents
+  } catch {
+    console.log('failed to authorize')
+    return
+  }
 }
 
 async function recurse_contents(content, opts){
@@ -41,7 +44,7 @@ async function recurse_contents(content, opts){
   }
 }
 
-mongoose.connect('mongodb://localhost:27017/test', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true, 
   useUnifiedTopology: true
 });

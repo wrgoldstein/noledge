@@ -33,7 +33,7 @@ polka() // You can also use Express
 			session: req => ({
         user: req.session && req.session.user,
         github_client_id: process.env.GITHUB_CLIENT_ID,
-        host: dev ? `localhost:${PORT}` : 'production url'
+        host: dev ? `localhost:${PORT}` : `${process.env.HOST}`
 			})
     }))
 	.listen(PORT, err => {

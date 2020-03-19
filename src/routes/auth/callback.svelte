@@ -16,4 +16,4 @@
   })
 </script>
 
-<p>Authenticating...</p>
+<p>Authenticating...(this may take a while, since all notebooks are being requested individually)</p>

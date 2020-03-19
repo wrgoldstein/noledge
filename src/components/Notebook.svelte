@@ -3,20 +3,22 @@
   import Cell from "./Cell.svelte"
 
   export let file, notebook
-
-  let show_code = notebook.cells.map(i => false)
-  
+  if (typeof(notebook) == 'string'){
+    // major hack, not yet sure why this is
+    // sometimes a string
+    notebook = JSON.parse(notebook)
+  }
+  let cells = notebook.cells || []
+  let show_code = cells.map(i => false)
   function show_all_code(){
-    show_code = notebook.cells.map(i => true)
+    show_code = cells.map(i => true)
   }
 
   function hide_all_code(){
-    show_code = notebook.cells.map(i => false)
+    show_code = cells.map(i => false)
   }
-  
 </script>
 <style>
-
 tag {
     padding: 5px;
     border: 1px solid #eee;
@@ -54,7 +56,7 @@ vspacer {
     <a class="btn" on:click={hide_all_code}>Hide all code</a>
 </div>
 
-{#each notebook.cells as cell, i }
+{#each cells as cell, i }
   <Cell {cell} bind:showCode={show_code[i]}/>
 {/each}
 

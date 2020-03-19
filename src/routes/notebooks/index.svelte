@@ -35,7 +35,7 @@
       .then(response => response.json())
       .then(json => {
         files = json.files
-        // files = _.sortBy(json.files, (f) => f.type == 'folder' ? 0 : 1)
+        files = _.reverse(_.sortBy(json.files, (f) => f.updated_at))
         loading = false
       })
       .catch(err => {

@@ -13,7 +13,7 @@
   let loading_message = ''
 
   function refresh(){
-    loading_message = "You will be redirected"
+    loading_message = "You will be redirected (this may take a while)"
     fetch('/auth/refresh').then((response) => {
       goto('/notebooks')
     })
@@ -21,7 +21,7 @@
 
   function login(){
     fetch('/auth/login').then((response) => {
-      goto('/notebooks')
+      window.location.reload()
     })
   }
 

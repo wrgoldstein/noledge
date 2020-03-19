@@ -27,6 +27,7 @@ export async function get(req, res){
   const token = text.slice(13, 53)
   // todo don't do this on every authentication
   const tree = await get_contents(token)
+
   await persist_tree(tree, token) // persist files
 
   const opts = { 

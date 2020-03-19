@@ -66,3 +66,9 @@ table {
   border: 1px solid #000;
   border-collapse: collapse;
 }
+
+/* links in markdown */
+#sapper > main > div > p > a {
+  color: #5F74DA;
+  text-decoration: underline;
+}
