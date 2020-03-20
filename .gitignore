@@ -7,3 +7,5 @@ yarn-error.log
 config.json
 .env
 .sessions
+notebooks
+lookup.json
