@@ -10,7 +10,7 @@
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "test": "run-p --race dev cy:run",
-    "postinstall": "npm run build"
+    "postinstall": "node src/github.js && npm run build"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -27,7 +27,8 @@
     "polka": "next",
     "prismjs": "^1.19.0",
     "session-file-store": "^1.4.0",
-    "sirv": "^0.4.0"
+    "sirv": "^0.4.0",
+    "tmp": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
