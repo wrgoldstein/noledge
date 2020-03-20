@@ -33,11 +33,11 @@ export async function build_lookup(){
 
     // git blame the file
     const fpath = f.split('/').slice(1).join('/')    
-    const cmd = `git -C ${directory} blame ${fpath} -p | grep author`
+    const cmd = `git -C ${directory} blame '${fpath}' -p | grep '^author'`
     const { stdout, stderr } = await awaitExec(cmd)
     const rstdout = stdout.split('\n').reverse().join('\n')
     const author = new RegExp('author (.*)').exec(rstdout)[1]
-    const time = new RegExp('author-time (.*)\n').exec(rstdout)[1]
+    const time = new RegExp('author-time (.*)').exec(rstdout)[1]
     let updated_at = new Date(0)
     updated_at.setUTCSeconds(+time)
     let slug = slugify(fpath.replace(/\//g, '.').slice(0, -6).toLowerCase())
