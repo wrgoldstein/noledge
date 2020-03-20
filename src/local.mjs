@@ -15,6 +15,7 @@ let lookup_path = 'lookup.json'
 let index
 
 export async function build_lookup(){
+  console.log('[info] Beginning lookup build')
   let lookup = {}
 
   index = elasticlunr(function(){
@@ -66,6 +67,7 @@ export async function build_lookup(){
   })
   await Promise.all(work)
   fs.writeFileSync(lookup_path, JSON.stringify(lookup))
+  console.log('[info] Finished lookup build')
   return
 }
 

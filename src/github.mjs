@@ -8,14 +8,17 @@ const awaitExec = util.promisify(exec)
 const repo = process.env.REPO
 
 export async function clone() {
+  console.log('[info] Beginning cloning repository')
   tmp.file(async (err, path, fd, cleanup) => {
-    fs.writeFile(path, process.env.DEPLOY_SECRET, (err)=> {
+    fs.writeFileSync(path, process.env.DEPLOY_SECRET, (err)=> {
       if (err) return console.log(err)
     })
     const cmd = `ssh-agent bash -c 'ssh-add ${path}; git clone ${repo} notebooks'`
     await awaitExec(`rm -rf notebooks`)
-    await awaitExec(cmd, (err, stdout, stderr) => {
+    await awaitExec(cmd, async (err, stdout, stderr) => {
       if (err) return console.log(err)
+      console.log('[info] Finished cloning repository')
+      await build_lookup()
       return 'ok'
     })
   })
@@ -23,5 +26,5 @@ export async function clone() {
 
 // hack
 if (process.argv[1].split('/').pop() == 'github.mjs') {
-  clone().then(build_lookup)
+  clone()
 }
