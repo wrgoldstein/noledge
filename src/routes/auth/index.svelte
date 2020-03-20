@@ -1,16 +1,18 @@
 <script>
   import { stores, goto } from '@sapper/app';
+  import loader from '@beyonk/async-script-loader'
   import GoogleAuth from '@beyonk/svelte-social-auth/src/google-auth/GoogleAuth.svelte'
 
   const { session } = stores()
-  const github_root = "https://github.com/login/oauth/authorize"
-  const redirect_uri = `http://${$session.host}/auth/callback`
-  const github_url = [
-    `${github_root}?client_id=${$session.github_client_id}`,
-    `redirect_uri=${redirect_uri}`,
-    `scope=repo`
-  ].join('&')
+  // const github_root = "https://github.com/login/oauth/authorize"
+  // const redirect_uri = `http://${$session.host}/auth/callback`
+  // const github_url = [
+  //   `${github_root}?client_id=${$session.github_client_id}`,
+  //   `redirect_uri=${redirect_uri}`,
+  //   `scope=repo`
+  // ].join('&')
 
+  const client_id = $session.client_id
   let loading_message = ''
 
   function refresh(){
@@ -20,32 +22,37 @@
     })
   }
 
-  function login(){
-    fetch('/auth/login').then((response) => {
-      window.location.reload()
+  // function login(){
+    // fetch('/auth/login').then((response) => {
+    //   window.location.reload()
+    // })
+  // }
+
+  // function logout(){
+  //   fetch('/auth/logout').then(() => {
+  //     $session.user = undefined
+  //     goto('/')
+  //   })
+  // }
+
+  function login(e){
+    console.log(e.detail.user.Qt.Ad)
+    fetch(`/auth/login?name=${e.detail.user.Qt.Ad}`)
+      .then(response => response.json())
+      .then(response => {
+        console.log($session)
+        session.set({ user: { login: e.detail.user.Qt.Ad, ...response }} )
     })
   }
 
-  function logout(){
-    fetch('/auth/logout').then(() => {
-      $session.user = undefined
-      goto('/')
-    })
-  }
-
-  function onSignIn(googleUser) {
-    var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-  }
-
-  function signOut() {
+  function logout() {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
+      fetch('/auth/logout').then(() => {
+        $session.user = undefined
+        goto('/')
+      })
+    })
   }
 </script>
 
@@ -57,9 +64,9 @@
   {#if $session.user}
     <a class="btn" on:click={refresh}>reload notebooks</a>
     <a class="btn" on:click={logout}>log out</a>
-  {:else}
-    <a class="btn" href="{github_url}">login (with github)</a>
   {/if}
+  <div style="display: {$session.user ? 'none' : 'block'}">
+    <GoogleAuth clientId="{client_id}" on:auth-success={login} />
+  </div>
 </div>
 
-<GoogleAuth clientId="234393341639-ouolnt6vcbf1fcteebp9oa3racb9fphi" on:auth-success={e => console.dir(e.detail.user)} />

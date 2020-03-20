@@ -32,7 +32,7 @@ polka() // You can also use Express
 		sapper.middleware({
 			session: req => ({
         user: req.session && req.session.user,
-        github_client_id: process.env.GITHUB_CLIENT_ID,
+        client_id: process.env.GOOGLE_CLIENT_ID,
         host: dev ? `localhost:${PORT}` : `${process.env.HOST}`
 			})
     }))

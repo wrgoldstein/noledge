@@ -12,20 +12,20 @@
   let display = 'stream'
   let error
 
-  const github_root = "https://github.com/login/oauth/authorize"
-  const redirect_uri = `http://${$session.host}/auth/callback`
-  const github_url = [
-    `${github_root}?client_id=${$session.github_client_id}`,
-    `redirect_uri=${redirect_uri}`
-  ].join('&')
+  // const github_root = "https://github.com/login/oauth/authorize"
+  // const redirect_uri = `http://${$session.host}/auth/callback`
+  // const github_url = [
+  //   `${github_root}?client_id=${$session.github_client_id}`,
+  //   `redirect_uri=${redirect_uri}`
+  // ].join('&')
 
   let files = []
   let loading = 'Loading page'
 
   onMount(() => {
-    // if (!$session.user){
-    //   goto('/auth')
-    // }
+    if (!$session.user){
+      goto('/auth')
+    }
     loading = 'Loading data'
     fetch(`notebooks.json`)
       .then(response => {
@@ -42,7 +42,7 @@
         error = err
       })
   })
-  
+
   let term = ''
   function search(){
     fetch('/notebooks/search', { 

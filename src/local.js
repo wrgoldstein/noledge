@@ -10,12 +10,8 @@ import elasticlunr from "elasticlunr"
 const readFile = util.promisify(fs.readFile);
 const awaitExec = util.promisify(exec)
 
-const repo = process.env.REPO
-const re = new RegExp('https:\/\/github.com\/.+\/(.+)\.git')
-const directory = re.exec(repo)[1]
-
+const directory = 'notebooks'
 let lookup_path = 'lookup.json'
-
 let index
 
 export async function build_lookup(){
