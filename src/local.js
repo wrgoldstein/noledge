@@ -5,6 +5,7 @@ import glob from 'glob'
 import _ from "lodash"
 import yaml from "js-yaml"
 import slugify from "slugify"
+import elasticlunr from "elasticlunr"
 
 const readFile = util.promisify(fs.readFile);
 const awaitExec = util.promisify(exec)
@@ -15,10 +16,20 @@ const directory = re.exec(repo)[1]
 
 let lookup_path = 'lookup.json'
 
+let index
+
 export async function build_lookup(){
   let lookup = {}
+
+  index = elasticlunr(function(){
+    this.addField('title')
+    this.addField('tags')
+    this.addField('author')
+    this.setRef('ref')
+  })
+
   let paths = glob.sync(`${directory}/**/*.ipynb`)
-  let work = paths.map(async f => {
+  let work = paths.map(async (f, i) => {
     const body = await readFile(f, 'utf8')
     if (!body) return
     const json = JSON.parse(body)
@@ -33,7 +44,7 @@ export async function build_lookup(){
     const time = new RegExp('author-time (.*)\n').exec(rstdout)[1]
     let updated_at = new Date(0)
     updated_at.setUTCSeconds(+time)
-    let slug = slugify(fpath.replace(/\//g, '.').slice(0, -6))
+    let slug = slugify(fpath.replace(/\//g, '.').slice(0, -6).toLowerCase())
 
     // handle metadata
     if (json.cells[0].cell_type == "raw"){
@@ -45,6 +56,7 @@ export async function build_lookup(){
     const title = fpath.split('/').pop().slice(0, -6)
 
     lookup[slug] = {
+      ref: i,
       slug,
       title,
       tags: [],
@@ -53,6 +65,8 @@ export async function build_lookup(){
       updated_at,
       ...meta
     }
+
+    index.addDoc(lookup[slug])
   })
   await Promise.all(work)
   fs.writeFileSync(lookup_path, JSON.stringify(lookup))
@@ -75,4 +89,17 @@ export async function get_by_slug(slug){
     notebook.cells.shift()
   }
   return { file, notebook }
+}
+
+export async function search(text){
+  const refs = index.search(text, {expand: true}).map(f => +f.ref)
+  const response = await get_by_refs(refs)
+  return response
+}
+
+async function get_by_refs(refs){
+  let lookup = await readFile(lookup_path, 'utf8')
+  lookup = JSON.parse(lookup)
+  const found = Object.values(lookup).filter(f => refs.includes(f.ref))
+  return found
 }

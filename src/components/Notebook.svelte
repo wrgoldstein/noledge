@@ -58,7 +58,6 @@ vspacer {
 </div>
 
 {#each cells as cell, i }
-  {console.log(cell)}
   <Cell {cell} bind:showCode={show_code[i]}/>
 {/each}
 
