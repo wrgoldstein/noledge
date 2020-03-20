@@ -36,12 +36,11 @@
   // }
 
   function login(e){
-    console.log(e.detail.user.Qt.Ad)
     fetch(`/auth/login?name=${e.detail.user.Qt.Ad}`)
       .then(response => response.json())
       .then(response => {
-        console.log($session)
-        session.set({ user: { login: e.detail.user.Qt.Ad, ...response }} )
+        session.set({ user: { response }} )
+        goto('/notebooks')
     })
   }
 
@@ -54,10 +53,11 @@
       })
     })
   }
+
 </script>
 
 {#if $session.user }
-  <h1> hello { $session.user.login }</h1>
+  <h1> hello { $session.user.name }</h1>
 {/if}
 <!-- svelte-ignore a11y-missing-attribute -->
 <div>

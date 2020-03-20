@@ -70,13 +70,12 @@ export async function build_lookup(){
 }
 
 export async function list_files(){
-  await build_lookup()
   const body = await readFile(lookup_path, 'utf8')
   return JSON.parse(body)
 }
 
 export async function get_by_slug(slug){
-  let lookup = await readFile(lookup_path, 'utf8')
+  let lookup = await readFile(lookup_path.replace(/(\s+)/g, '\\$1'), 'utf8')
   lookup = JSON.parse(lookup)
   const file = lookup[slug]
   let notebook = await readFile(file.path, 'utf8')

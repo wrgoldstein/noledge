@@ -39,8 +39,9 @@ export async function get(req, res){
   //                             .then(resp => resp.json())
 
   // const { login } = github_user
-  const token = 'noledge'
-  const jwt_token = jwt.sign({ token }, jwtKey, {
+  
+  const name = req.query.name
+  const jwt_token = jwt.sign({ name }, jwtKey, {
     algorithm: 'HS256'
   })
 
@@ -48,6 +49,6 @@ export async function get(req, res){
     'Content-Type': 'application/json'
   })
 
-  req.session.user = { jwt_token }
-  res.end(JSON.stringify({ jwt_token }))
+  req.session.user = { name, jwt_token }
+  res.end(JSON.stringify({ name, jwt_token }))
 }
