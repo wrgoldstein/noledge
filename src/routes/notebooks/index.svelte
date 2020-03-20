@@ -23,9 +23,9 @@
   let loading = 'Loading page'
 
   onMount(() => {
-    if (!$session.user){
-      goto('/auth')
-    }
+    // if (!$session.user){
+    //   goto('/auth')
+    // }
     loading = 'Loading data'
     fetch(`notebooks.json`)
       .then(response => {
@@ -142,8 +142,8 @@
     <div class="file column">
       <div class="row">
         <div class="column wide">
-          <span><a href="/notebooks/{file.sha}">{file.name}</a></span>
-          <author>by {file.author.name}</author>
+          <span><a href="/notebooks/{file.slug}">{file.title}</a></span>
+          <author>by {file.author}</author>
         </div>
         <div class='column'>
           <p class="date">Updated {moment(file.updated_at).format('MM/DD/YYYY')}</p>

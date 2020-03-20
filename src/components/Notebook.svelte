@@ -4,6 +4,7 @@
 
   export let file, notebook
   if (typeof(notebook) == 'string'){
+    console.log('notebook is a string')
     // major hack, not yet sure why this is
     // sometimes a string
     notebook = JSON.parse(notebook)
@@ -37,8 +38,8 @@ vspacer {
 
 </style>
 
-<h1>{file.name}</h1>
-<p>by {file.author.name}</p>
+<h1>{file.title}</h1>
+<p>by {file.author}</p>
 <p>updated {moment(file.updated_at).format('MMMM Do YYYY, h:mm:ss a')}</p>
 {#each (file.tags || []) as tag}
   <tag>{tag}</tag>
@@ -57,6 +58,7 @@ vspacer {
 </div>
 
 {#each cells as cell, i }
+  {console.log(cell)}
   <Cell {cell} bind:showCode={show_code[i]}/>
 {/each}
 

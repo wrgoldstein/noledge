@@ -76,7 +76,7 @@
   {:else}
     <span on:click={toggleCode} class='eye blind'>show code</span>
   {/if}
-  {#each cell.outputs as output}
+  {#each (cell.outputs || []) as output}
     {#if output.output_type != 'stream' }
       <div class="output">
         {#if output.data && output.data['image/png']}
