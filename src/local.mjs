@@ -2,7 +2,6 @@ import util from "util"
 import { exec } from 'child_process'
 import fs from "fs"
 import glob from 'glob'
-import _ from "lodash"
 import yaml from "js-yaml"
 import slugify from "slugify"
 import elasticlunr from "elasticlunr"
@@ -99,4 +98,8 @@ async function get_by_refs(refs){
   lookup = JSON.parse(lookup)
   const found = Object.values(lookup).filter(f => refs.includes(f.ref))
   return found
+}
+
+if (process.argv[1].split('/').pop() == 'local.mjs') {
+  build_lookup()
 }

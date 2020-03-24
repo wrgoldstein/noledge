@@ -1,11 +1,7 @@
 import fetch from "node-fetch"
 import jwt from "jsonwebtoken"
-// import {
-//   persist_tree,
-//   get_contents
-// } from "../../repository"
 import * as auth from "./authorize"
-import * as gh from "../../github.mjs"
+import { pull, clone } from "../../github.mjs"
 
 export async function get(req, res){
   let [authorized, payload] = auth.authorize(req, res)
@@ -15,11 +11,18 @@ export async function get(req, res){
     return res.end('{}')
   }
 
-  gh.clone()
+  await pull()
+  res.end()
+}
 
-  // const { token } = payload
+export async function post(req, res){
+  let [authorized, payload] = auth.authorize(req, res)
   
-  // const tree = await get_contents(token)
-  // await persist_tree(tree, token)
+  if (!authorized){
+    res.statusCode = 401
+    return res.end('{}')
+  }
+
+  await clone()
   res.end()
 }

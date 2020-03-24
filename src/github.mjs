@@ -6,22 +6,31 @@ import { exec } from "child_process"
 
 const awaitExec = util.promisify(exec)
 const repo = process.env.REPO
+export async function clone(){
+  console.log('[info] Beginning repository pull')
+  await awaitExec(`rm -rf notebooks`)
+  const cmd = `echo "${process.env.DEPLOY_SECRET}" > tmpssh; ` + 
+  `chmod 700 tmpssh; ssh-agent bash -c 'ssh-add tmpssh; ` + 
+  `git clone ${repo} notebooks'`
+  await awaitExec(cmd)
+  console.log('[info] Finished repository clone')
+  await build_lookup()
+  await awaitExec('rm tmpssh')
+  console.log('[info] Cleaned up ssh credentials')
+  return
+}
 
-export async function clone() {
-  console.log('[info] Beginning cloning repository')
-  tmp.file(async (err, path, fd, cleanup) => {
-    fs.writeFileSync(path, process.env.DEPLOY_SECRET, (err)=> {
-      if (err) return console.log(err)
-    })
-    const cmd = `ssh-agent bash -c 'ssh-add ${path}; git clone ${repo} notebooks'`
-    await awaitExec(`rm -rf notebooks`)
-    await awaitExec(cmd, async (err, stdout, stderr) => {
-      if (err) return console.log(err)
-      console.log('[info] Finished cloning repository')
-      await build_lookup()
-      return 'ok'
-    })
-  })
+export async function pull(){
+  console.log('[info] Beginning repository pull')
+  const cmd = `echo "${process.env.DEPLOY_SECRET}" > tmpssh; ` + 
+  `chmod 700 tmpssh; ssh-agent bash -c 'ssh-add tmpssh; ` + 
+  `git -C notebooks pull'`
+  await awaitExec(cmd)
+  console.log('[info] Finished repository pull')
+  await build_lookup()
+  await awaitExec('rm tmpssh')
+  console.log('[info] Cleaned up ssh credentials')
+  return
 }
 
 // hack

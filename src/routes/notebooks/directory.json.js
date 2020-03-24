@@ -1,5 +1,5 @@
 import * as auth from "../auth/authorize"
-import { Repo, File } from "../../repository"
+// import { Repo, File } from "../../repository"
 
 export async function get(req, res) {
   // TODO cache this in a database
@@ -12,12 +12,12 @@ export async function get(req, res) {
 
   const { token } = payload
   const { display } = req.query
-  const tree = await Repo.findOne().exec()
-  const files = tree.tree
+  // const tree = await Repo.findOne().exec()
+  // const files = tree.tree
   
   res.writeHead(200, {
     'Content-Type': 'application/json'
   })
 
-  res.end(JSON.stringify({ files }));
+  res.end(JSON.stringify({ files: [] }));
 }

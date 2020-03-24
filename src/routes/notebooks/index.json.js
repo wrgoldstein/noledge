@@ -1,5 +1,6 @@
 import * as auth from "../auth/authorize"
-import { Repo, File } from "../../repository"
+import fs from "fs"
+// import { Repo, File } from "../../repository"
 import { list_files, search } from "../../local"
 import { FAILSAFE_SCHEMA } from "js-yaml"
 
@@ -14,11 +15,15 @@ export async function get(req, res) {
   // const { token } = payload
   // const { display } = req.query
   // const files = await File.find().exec() //todo paginate
-  const files = await list_files()
+  
+  let files = await list_files()
 
   res.writeHead(200, {
     'Content-Type': 'application/json'
   })
-  
-  res.end(JSON.stringify({ files }));
+
+  fs.stat('lookup.json', (err, stat) => {
+    if (err) return res.end('{}')
+    res.end(JSON.stringify({ files }));
+  })
 }
