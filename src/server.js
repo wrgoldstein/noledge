@@ -12,6 +12,9 @@ const FileStore = sessionFileStore(session);
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
+import { build_lookup } from './local'
+build_lookup()
+
 polka() // You can also use Express
   .use(session({
     secret: 'conduit',

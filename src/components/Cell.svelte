@@ -1,6 +1,7 @@
 <script>
   import marked from "marked"
   import Prism from "prismjs"
+  import katex from "katex"
   import "prismjs/components/prism-python"
   import "prismjs/themes/prism.css"
 
@@ -13,6 +14,28 @@
 
   function highlight(source){
       return Prism.highlight(`${source}`, Prism.languages.python, 'python')
+  }
+
+  function trim_latex(source){
+    return source.replace(/(^(\$|\n)*)|((\$|\n)*$)/g, '')
+  }
+
+  function mark(source){
+    // Do our best to find math
+    // Note \begin{equation} doesn't work
+    const re = /(\$\n(\n|.)*?\n\$)|(\$(.)*\$)/g
+    if (!re.test(source)) return marked(source)
+    source = source.replace(
+      re, (code) => {
+        try {
+          return katex.renderToString(trim_latex(code))
+        } catch (err){
+          console.log('======', code, '=====')
+          console.log(err)
+          return trim_latex(code)
+        }
+      })
+    return marked(source)
   }
 </script>
 <style>
@@ -61,7 +84,7 @@
 <!-- svelte-ignore a11y-missing-attribute -->
 {#if cell.cell_type == "markdown"}
   <div class="markdown">
-    {@html marked(cell.source.join(""))}
+    {@html mark(cell.source.join(""))}
   </div>
 {:else}
   {#if showCode }

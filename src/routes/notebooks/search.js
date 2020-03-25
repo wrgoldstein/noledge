@@ -1,6 +1,5 @@
 import * as auth from "../auth/authorize"
 import { search } from "../../local"
-import { Repo, File } from "../../repository"
 
 export async function post(req, res){
   let [authorized, payload] = auth.authorize(req, res) 
