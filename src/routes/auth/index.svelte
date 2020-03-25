@@ -29,24 +29,12 @@
     })
   }
 
-  // function login(){
-    // fetch('/auth/login').then((response) => {
-    //   window.location.reload()
-    // })
-  // }
-
-  // function logout(){
-  //   fetch('/auth/logout').then(() => {
-  //     $session.user = undefined
-  //     goto('/')
-  //   })
-  // }
-
   function login(e){
     fetch(`/auth/login?name=${e.detail.user.Qt.Ad}`)
       .then(response => response.json())
       .then(response => {
-        session.set({ user: { response }} )
+        session.set({ user: { ...response }} )
+        console.log($session)
         goto('/notebooks')
     })
   }
@@ -84,12 +72,13 @@
   {#if loading_message}
     <p>{loading_message}</p>
   {/if}
-  <div style="display: {$session.user ? 'none' : 'block'}">
-    <GoogleAuth clientId="{client_id}" on:auth-success={login} />
-  </div>
   {#if $session.user}
     <div class="bottom">
       <a class="btn" on:click={clone}>reset notebooks</a>
+    </div>
+  {:else}
+    <div style="display: {$session.user ? 'none' : 'block'}">
+      <GoogleAuth clientId="{client_id}" on:auth-success={login} />
     </div>
   {/if}
 </div>
