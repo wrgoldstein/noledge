@@ -4,13 +4,6 @@
   import GoogleAuth from '@beyonk/svelte-social-auth/src/google-auth/GoogleAuth.svelte'
 
   const { session } = stores()
-  // const github_root = "https://github.com/login/oauth/authorize"
-  // const redirect_uri = `http://${$session.host}/auth/callback`
-  // const github_url = [
-  //   `${github_root}?client_id=${$session.github_client_id}`,
-  //   `redirect_uri=${redirect_uri}`,
-  //   `scope=repo`
-  // ].join('&')
 
   const client_id = $session.client_id
   let loading_message = ''

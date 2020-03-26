@@ -28,7 +28,13 @@ export async function build_lookup(){
   let work = paths.map(async (f, i) => {
     const body = await readFile(f, 'utf8')
     if (!body) return
-    const json = JSON.parse(body)
+    let json
+    try {
+      json = JSON.parse(body)
+    } catch {
+      console.log(`${f} is not valid json.`)
+      return
+    }
     let meta = {}
 
     // git blame the file

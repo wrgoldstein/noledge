@@ -1,6 +1,4 @@
 import * as auth from "../auth/authorize"
-// import { Repo, File } from "../../repository"
-
 export async function get(req, res) {
   // TODO cache this in a database
   let [authorized, payload] = auth.authorize(req, res) 

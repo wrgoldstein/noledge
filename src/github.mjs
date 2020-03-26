@@ -21,6 +21,8 @@ export async function clone(){
     return
   } catch {
     console.log("[warn] Failed to clone repository")
+  } finally {
+    await awaitExec('rm -f tmpssh')
   }
 }
 
@@ -38,6 +40,8 @@ export async function pull(){
     return
   } catch {
     console.log('[warn] Failed to pull from repository')
+  } finally {
+    await awaitExec('rm -f tmpssh')
   }
 }
 
