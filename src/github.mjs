@@ -31,9 +31,10 @@ export async function pull(){
     console.log('[info] Beginning repository pull')
     const cmd = `echo "${process.env.DEPLOY_SECRET}" > tmpssh; ` + 
     `chmod 700 tmpssh; ssh-agent bash -c 'ssh-add tmpssh; ` + 
-    `git -C notebooks pull'`
+    `git -C notebooks fetch'`
     await awaitExec(cmd)
     console.log('[info] Finished repository pull')
+    await awaitExec(`git -C notebook reset --hard`)
     await build_lookup()
     await awaitExec('rm tmpssh')
     console.log('[info] Cleaned up ssh credentials')

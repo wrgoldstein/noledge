@@ -68,6 +68,7 @@
     margin: 15px;
     /* border-left: 2px solid #5F74DA;;
     padding-left: 2em; */
+    color: #FFD7A0
   }
 
   .code + .code {
