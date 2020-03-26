@@ -32,7 +32,7 @@
         } catch (err){
           console.log('======', code, '=====')
           console.log(err)
-          return trim_latex(code)
+          return trim_latex(`<pre>${code}</pre>`)
         }
       })
     return marked(source)
