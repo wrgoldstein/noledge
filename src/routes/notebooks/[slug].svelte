@@ -1,12 +1,28 @@
-<script context="module">
-	export function preload({ params, session, query }) {
-    return this.fetch(`notebooks/${params.slug}.json`)
-      .then(r => r.json())
-	}
-</script>
 <script>
-  export let notebook, file
+  import { onMount } from "svelte"
+  import { stores } from '@sapper/app';
+  const { page } = stores();
+
+  let notebook, file
+  let loading = true
   import Notebook from "../../components/Notebook.svelte"
+
+  onMount(() => {
+    fetch(`notebooks/${$page.params.slug}.json`)
+      .then(r => r.json())
+      .then((json) => {
+        notebook = json.notebook
+        file = json.file
+        loading = false
+        return json
+      })
+  })
 </script>
 
-<Notebook {file} {notebook}/>
+{#if loading}
+  <h1> Loading...</h1>
+{/if}
+
+{#if notebook}
+  <Notebook {file} {notebook}/>
+{/if}
