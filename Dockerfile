@@ -11,7 +11,6 @@ COPY src src
 COPY rollup.config.js rollup.config.js
 RUN apt-get update && apt-get install -y openssh-client
 RUN apt-get update && apt-get install -y git
-RUN ssh-keyscan -H github.com > known_hosts
 RUN npm install
 RUN npm run build
 CMD [ "npm", "start" ]
