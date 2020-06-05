@@ -5,6 +5,7 @@ import glob from 'glob'
 import yaml from "js-yaml"
 import slugify from "slugify"
 import elasticlunr from "elasticlunr"
+import _ from "lodash"
 
 const readFile = util.promisify(fs.readFile);
 const awaitExec = util.promisify(exec)
@@ -94,9 +95,14 @@ export async function get_by_slug(slug){
 }
 
 export async function search(text){
-  const refs = index.search(text, {expand: true}).map(f => +f.ref)
-  const response = await get_by_refs(refs)
-  return response
+  if (text == ''){
+    let files = await list_files()
+    files = _.reverse(_.sortBy(files, (f) => f.updated_at))
+    return Object.values(files)
+  } else {
+    const refs = index.search(text, {expand: true}).map(f => +f.ref)
+    return await get_by_refs(refs)
+  }
 }
 
 async function get_by_refs(refs){
