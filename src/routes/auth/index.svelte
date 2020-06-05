@@ -23,7 +23,7 @@
   }
 
   function login(e){
-    fetch(`/auth/login?name=${e.detail.user.Qt.Ad}`)
+    fetch(`/auth/login?name=${e.detail.user.Tt.Bd}`)
       .then(response => response.json())
       .then(response => {
         session.set({ user: { ...response }} )
