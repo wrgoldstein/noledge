@@ -72,3 +72,8 @@ table {
   color: #5F74DA;
   text-decoration: underline;
 }
+
+.center-image {
+    margin-left: auto;
+    max-width: 120%;
+}

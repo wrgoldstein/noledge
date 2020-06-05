@@ -27,18 +27,31 @@
     // Do our best to find math
     // Note \begin{equation} doesn't work
     const re = /(\$\n(\n|.)*?\n\$)|(\$(.)*\$)/g
-    if (!re.test(source)) return marked(source)
-    source = source.replace(
-      re, (code) => {
-        try {
-          return katex.renderToString(trim_latex(code))
-        } catch (err){
-          console.log('======', code, '=====')
-          console.log(err)
-          return trim_latex(`<pre>${code}</pre>`)
+    if (re.test(source)) {
+      source = source.replace(
+        re, (code) => {
+          try {
+            return katex.renderToString(trim_latex(code))
+          } catch (err){
+            console.log('======', code, '=====')
+            console.log(err)
+            return trim_latex(`<pre>${code}</pre>`)
+          }
+        })
+    }
+    let _marked =  marked(source)
+    const re2 = /<img src="attachment:(.+?)".*?>/
+    if (re2.test(_marked)){
+      console.log('------------')
+      _marked = _marked.replace(
+        re2, (attachment, foo) => {
+          console.log(_marked)
+          console.log(cell, foo)
+          return `<img class='center-image' src="data:image/png;base64,${cell.attachments[foo]['image/png']}">`
         }
-      })
-    return marked(source)
+      )
+    }
+    return _marked
   }
 
   function parse_options(){
@@ -123,7 +136,6 @@
   <span style='display: none;'>omitted</span>
 {:else}
   {#if showCode }
-    <span on:click={toggleCode} class='eye'>hide code</span>
     <div class="code" in:fade={{ duration: 200 }}>
       <pre>
         <code>
@@ -131,8 +143,6 @@
         </code>
       </pre>
     </div>
-  {:else}
-    <span on:click={toggleCode} class='eye blind'>show code</span>
   {/if}
   {#each (cell.outputs || []) as output}
     {#if output.output_type != 'stream' }
