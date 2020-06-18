@@ -1,6 +1,8 @@
 <script>
   import { stores, goto } from '@sapper/app';
 
+  import Loading from "./Loading.svelte";
+
   export let callback
   export let message
 
@@ -18,6 +20,7 @@
 <!-- svelte-ignore a11y-missing-attribute -->
 <div>
   {#if loading}
+    <Loading />
     <p>Getting the latest notebooks, this may take a minute.</p>
     <p>You'll be redirected.</p>
   {:else}
