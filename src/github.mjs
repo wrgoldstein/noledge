@@ -37,7 +37,7 @@ export async function pull(){
     `${GIT_SSH_COMMAND} git -C notebooks fetch'`
     await awaitExec(cmd)
     console.log('[info] Finished repository pull')
-    await awaitExec(`git -C notebook reset --hard`)
+    await awaitExec(`${GIT_SSH_COMMAND} git -C notebooks reset --hard origin/master`)
     await build_lookup()
     await awaitExec('rm tmpssh')
     console.log('[info] Cleaned up ssh credentials')
