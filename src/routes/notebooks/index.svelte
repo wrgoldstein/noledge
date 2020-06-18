@@ -6,23 +6,17 @@
   import moment from "moment"
 
   import Notebook from "../../components/Notebook.svelte"
+  import GitCloneButton from "../../components/GitCloneButton.svelte"
 
   const { session } = stores()
 
   let display = 'stream'
   let error
 
-  // const github_root = "https://github.com/login/oauth/authorize"
-  // const redirect_uri = `http://${$session.host}/auth/callback`
-  // const github_url = [
-  //   `${github_root}?client_id=${$session.github_client_id}`,
-  //   `redirect_uri=${redirect_uri}`
-  // ].join('&')
-
   let files = []
   let loading = 'Loading page'
 
-  onMount(() => {
+  let loadNotebooks = () => {
     if (!$session.user){
       goto('/auth')
     }
@@ -41,7 +35,9 @@
       .catch(err => {
         error = err
       })
-  })
+  }
+
+  onMount(loadNotebooks)
 
   let term = ''
   function search(){
@@ -62,6 +58,12 @@
 <style>
   .giant {
     font-size: 4em;
+  }
+
+  .prominent {
+    font-family: 'Open Sans';
+    cursor: pointer;
+    color: #5F74DA;
   }
 
   .file {
@@ -162,5 +164,10 @@
 {:else if loading}
   <p class='giant'>{loading}</p>
 {:else}
-  <p>Nothing found</p>
+  <p>
+    
+    <GitCloneButton 
+      message='No notebooks were found! Try refreshing them here: '
+      callback={loadNotebooks}/>
+  </p>
 {/if}
