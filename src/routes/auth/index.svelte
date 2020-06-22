@@ -23,11 +23,10 @@
   }
 
   function login(e){
-    fetch(`/auth/login?name=${e.detail.user.Tt.Bd}`)
+    fetch(`/auth/login`)
       .then(response => response.json())
       .then(response => {
         session.set({ user: { ...response }} )
-        console.log($session)
         goto('/notebooks')
     })
   }
@@ -54,9 +53,10 @@
 </style>
 
 {#if $session.user }
-  <h1> Hello { $session.user.name }</h1>
+  <h1> Hi there </h1>
 {/if}
 <!-- svelte-ignore a11y-missing-attribute -->
+
 <div>
   {#if $session.user}
     <a class="btn" on:click={pull}>get latest</a>
@@ -68,6 +68,9 @@
   {#if $session.user}
     <div class="bottom">
       <a class="btn" on:click={clone}>reset notebooks</a>
+    </div>
+    <div style='display: none'>
+      <GoogleAuth clientId="{client_id}" on:auth-success={login} />
     </div>
   {:else}
     <div style="display: {$session.user ? 'none' : 'block'}">
