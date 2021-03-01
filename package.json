@@ -28,7 +28,7 @@
     "node-fetch": "^2.6.0",
     "node-glob": "^1.2.0",
     "polka": "next",
-    "prismjs": "^1.20.0",
+    "prismjs": "^1.23.0",
     "session-file-store": "^1.4.0",
     "sirv": "^0.4.6",
     "slugify": "^1.4.0",
